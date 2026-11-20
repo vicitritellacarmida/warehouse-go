@@ -192,8 +192,8 @@ func (q *Queries) ListWarehouses(ctx context.Context) ([]domain.Warehouse, error
 func (q *Queries) SetReorderPoint(ctx context.Context, productID, warehouseID, point int64) error {
 	_, err := q.db.ExecContext(ctx, `
 		INSERT INTO reorder_points (product_id, warehouse_id, reorder_point, updated_at)
-		VALUES (?, ?, ?, UTC_TIMESTAMP(6)) AS new
-		ON DUPLICATE KEY UPDATE reorder_point = new.reorder_point, updated_at = new.updated_at`,
-		productID, warehouseID, point)
+		VALUES (?, ?, ?, UTC_TIMESTAMP(6))
+		ON DUPLICATE KEY UPDATE reorder_point = ?, updated_at = UTC_TIMESTAMP(6)`,
+		productID, warehouseID, point, point)
 	return err
 }

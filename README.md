@@ -180,7 +180,8 @@ The service does not store responses with status 500 or higher, so the client ca
 ## Requirements
 
 - Go 1.22 or later.
-- MySQL 8.0.19 or later. The SQL uses `INSERT ... AS new ON DUPLICATE KEY UPDATE`, `FOR UPDATE OF`, `CHECK` constraints and generated columns.
+- MySQL 8.0.1 or later. The SQL uses `FOR UPDATE OF`, `FOR SHARE`, `CHECK` constraints and stored generated columns.
+- MariaDB does not work yet. See "Running on MariaDB" below.
 - The MySQL user must be able to create triggers. If binary logging is on, the user needs the `TRIGGER` privilege and `log_bin_trust_function_creators=1`, or the `SUPER` privilege.
 
 ## Setup
@@ -188,7 +189,7 @@ The service does not store responses with status 500 or higher, so the client ca
 1. Create a database and a user:
 
    ```sql
-   CREATE DATABASE warehouse CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+   CREATE DATABASE warehouse CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
    CREATE USER 'warehouse'@'%' IDENTIFIED BY 'YOUR_PASSWORD_HERE';
    GRANT ALL PRIVILEGES ON warehouse.* TO 'warehouse'@'%';
    ```
@@ -211,6 +212,28 @@ If a `.env` file exists in the current directory, the service reads it. Variable
 | `AUTO_MIGRATE` | `true` | If `true`, the server applies pending migrations at startup. |
 | `RECEIPT_TOLERANCE_BP` | `500` | Default receipt tolerance in basis points. |
 | `SHUTDOWN_TIMEOUT` | `15s` | Time to finish open requests on shutdown. |
+
+## Running on MariaDB
+
+The service targets MySQL 8. It does not run on MariaDB yet. Two things still
+block it. Both need a live MariaDB server to fix and to test.
+
+1. `SELECT ... FOR UPDATE OF si`. Four queries in `internal/store/stock.go`
+   join `stock_items` to `locations` and lock only the stock rows. MariaDB has
+   no `OF` clause. Plain `FOR UPDATE` on the same query would also lock the
+   location rows. That breaks the lock order in "Concurrency", because writes
+   must take location locks before stock locks. The fix is to move the location
+   filter out of the join, so the locking read touches one table.
+2. `FOR SHARE` in `internal/store/locations.go`. MariaDB spells this
+   `LOCK IN SHARE MODE`.
+
+These were already made portable, so they are no longer in the way:
+
+- The collation is `utf8mb4_unicode_ci`, which both servers accept.
+- The upserts bind their values as parameters instead of using the MySQL 8 row
+  alias `INSERT ... AS new`.
+- Triggers, `SIGNAL SQLSTATE`, `CHECK` constraints, `GET_LOCK` and stored
+  generated columns work on MariaDB 10.2 and later.
 
 ## Running
 

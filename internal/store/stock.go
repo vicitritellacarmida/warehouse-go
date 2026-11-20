@@ -97,10 +97,10 @@ func (q *Queries) queryStock(ctx context.Context, query string, args ...any) ([]
 func (q *Queries) EnsureStockItem(ctx context.Context, productID, warehouseID, locationID int64, lotID *int64, receivedAt time.Time) (int64, error) {
 	res, err := q.db.ExecContext(ctx, `
 		INSERT INTO stock_items (product_id, warehouse_id, location_id, lot_id, on_hand, reserved, received_at, updated_at)
-		VALUES (?, ?, ?, ?, 0, 0, ?, ?) AS new
+		VALUES (?, ?, ?, ?, 0, 0, ?, ?)
 		ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(stock_items.id),
-			received_at = IF(stock_items.on_hand = 0, new.received_at, LEAST(stock_items.received_at, new.received_at))`,
-		productID, warehouseID, locationID, nullInt(lotID), receivedAt, receivedAt)
+			received_at = IF(stock_items.on_hand = 0, ?, LEAST(stock_items.received_at, ?))`,
+		productID, warehouseID, locationID, nullInt(lotID), receivedAt, receivedAt, receivedAt, receivedAt)
 	if err != nil {
 		return 0, err
 	}

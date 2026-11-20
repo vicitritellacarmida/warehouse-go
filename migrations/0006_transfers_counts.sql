@@ -10,7 +10,7 @@ CREATE TABLE transfers (
     PRIMARY KEY (id),
     CONSTRAINT fk_transfers_from FOREIGN KEY (from_warehouse_id) REFERENCES warehouses (id),
     CONSTRAINT fk_transfers_to FOREIGN KEY (to_warehouse_id) REFERENCES warehouses (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE transfer_lines (
     id           BIGINT NOT NULL AUTO_INCREMENT,
@@ -23,7 +23,7 @@ CREATE TABLE transfer_lines (
     KEY ix_transfer_lines_transfer (transfer_id),
     CONSTRAINT fk_transfer_lines_transfer FOREIGN KEY (transfer_id) REFERENCES transfers (id),
     CONSTRAINT ck_transfer_lines_qty CHECK (quantity > 0 AND qty_received <= qty_shipped)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- What was shipped per lot (part_kind = 'lot') and per cost (part_kind = 'cost').
 CREATE TABLE transfer_line_parts (
@@ -39,7 +39,7 @@ CREATE TABLE transfer_line_parts (
     KEY ix_transfer_line_parts_line (transfer_line_id),
     CONSTRAINT fk_transfer_line_parts_line FOREIGN KEY (transfer_line_id) REFERENCES transfer_lines (id),
     CONSTRAINT ck_transfer_line_parts_kind CHECK (part_kind IN ('lot', 'cost'))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE cycle_counts (
     id           BIGINT       NOT NULL AUTO_INCREMENT,
@@ -53,7 +53,7 @@ CREATE TABLE cycle_counts (
     PRIMARY KEY (id),
     KEY ix_cycle_counts_location (location_id),
     CONSTRAINT fk_cycle_counts_location FOREIGN KEY (location_id) REFERENCES locations (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE cycle_count_lines (
     id          BIGINT NOT NULL AUTO_INCREMENT,
@@ -67,4 +67,4 @@ CREATE TABLE cycle_count_lines (
     UNIQUE KEY uq_cycle_count_lines (count_id, product_id, lot_key),
     CONSTRAINT fk_cycle_count_lines_count FOREIGN KEY (count_id) REFERENCES cycle_counts (id),
     CONSTRAINT ck_cycle_count_lines_qty CHECK (system_qty >= 0 AND (counted_qty IS NULL OR counted_qty >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

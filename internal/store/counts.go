@@ -34,9 +34,9 @@ func (q *Queries) UpsertCountLine(ctx context.Context, countID int64, l *domain.
 	l.CountID = countID
 	res, err := q.db.ExecContext(ctx, `
 		INSERT INTO cycle_count_lines (count_id, product_id, lot_id, system_qty, counted_qty)
-		VALUES (?, ?, ?, ?, ?) AS new
-		ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(cycle_count_lines.id), counted_qty = new.counted_qty`,
-		countID, l.ProductID, nullInt(l.LotID), l.SystemQty, nullInt(l.CountedQty))
+		VALUES (?, ?, ?, ?, ?)
+		ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(cycle_count_lines.id), counted_qty = ?`,
+		countID, l.ProductID, nullInt(l.LotID), l.SystemQty, nullInt(l.CountedQty), nullInt(l.CountedQty))
 	if err != nil {
 		return err
 	}

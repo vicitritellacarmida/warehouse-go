@@ -12,7 +12,7 @@ CREATE TABLE sales_orders (
     UNIQUE KEY uq_sales_orders_number (order_number),
     KEY ix_sales_orders_backorder (backorder_of_id),
     CONSTRAINT fk_sales_orders_warehouse FOREIGN KEY (warehouse_id) REFERENCES warehouses (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE order_lines (
     id              BIGINT      NOT NULL AUTO_INCREMENT,
@@ -29,7 +29,7 @@ CREATE TABLE order_lines (
     CONSTRAINT fk_order_lines_order FOREIGN KEY (order_id) REFERENCES sales_orders (id),
     CONSTRAINT fk_order_lines_product FOREIGN KEY (product_id) REFERENCES products (id),
     CONSTRAINT ck_order_lines_qty CHECK (quantity > 0 AND qty_allocated + qty_backordered <= quantity)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE allocations (
     id            BIGINT      NOT NULL AUTO_INCREMENT,
@@ -49,7 +49,7 @@ CREATE TABLE allocations (
     CONSTRAINT fk_allocations_line FOREIGN KEY (order_line_id) REFERENCES order_lines (id),
     CONSTRAINT fk_allocations_stock FOREIGN KEY (stock_item_id) REFERENCES stock_items (id),
     CONSTRAINT ck_allocations_qty CHECK (quantity > 0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE shipments (
     id         BIGINT      NOT NULL AUTO_INCREMENT,
@@ -59,7 +59,7 @@ CREATE TABLE shipments (
     PRIMARY KEY (id),
     UNIQUE KEY uq_shipments_order (order_id),
     CONSTRAINT fk_shipments_order FOREIGN KEY (order_id) REFERENCES sales_orders (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE shipment_lines (
     id            BIGINT NOT NULL AUTO_INCREMENT,
@@ -72,4 +72,4 @@ CREATE TABLE shipment_lines (
     PRIMARY KEY (id),
     KEY ix_shipment_lines_shipment (shipment_id),
     CONSTRAINT fk_shipment_lines_shipment FOREIGN KEY (shipment_id) REFERENCES shipments (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

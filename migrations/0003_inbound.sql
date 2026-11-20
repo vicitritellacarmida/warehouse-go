@@ -11,7 +11,7 @@ CREATE TABLE receipts (
     PRIMARY KEY (id),
     UNIQUE KEY uq_receipts_reference (warehouse_id, reference),
     CONSTRAINT fk_receipts_warehouse FOREIGN KEY (warehouse_id) REFERENCES warehouses (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE receipt_lines (
     id           BIGINT NOT NULL AUTO_INCREMENT,
@@ -25,4 +25,4 @@ CREATE TABLE receipt_lines (
     CONSTRAINT fk_receipt_lines_receipt FOREIGN KEY (receipt_id) REFERENCES receipts (id),
     CONSTRAINT fk_receipt_lines_product FOREIGN KEY (product_id) REFERENCES products (id),
     CONSTRAINT ck_receipt_lines_qty CHECK (expected_qty > 0 AND received_qty >= 0 AND unit_cost >= 0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

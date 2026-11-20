@@ -9,4 +9,4 @@ CREATE TABLE idempotency_keys (
     response_body MEDIUMBLOB   NULL,
     created_at    DATETIME(6)  NOT NULL,
     PRIMARY KEY (idem_key, method, path)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

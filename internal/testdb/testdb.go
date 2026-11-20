@@ -73,7 +73,7 @@ func Open(suffix string) (*DB, error) {
 	}
 	for _, stmt := range []string{
 		"DROP DATABASE IF EXISTS `" + name + "`",
-		"CREATE DATABASE `" + name + "` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci",
+		"CREATE DATABASE `" + name + "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci",
 	} {
 		if _, err := admin.ExecContext(ctx, stmt); err != nil {
 			admin.Close()
